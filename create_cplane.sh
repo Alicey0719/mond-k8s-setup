@@ -10,5 +10,6 @@ fi
 kubeadm init \
 	--kubernetes-version=1.30.3 \
 	--service-dns-domain=mond-k8s.alicey.dev \
+	--apiserver-cert-extra-sans=cp.mond-k8s.alicey.dev \
 	--pod-network-cidr=192.168.0.0/16
 
