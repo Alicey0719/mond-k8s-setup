@@ -1,0 +1,18 @@
+services:
+  mond-k8s-haproxy:
+    image: haproxy:3.0.3-bookworm
+    container_name: mond-k8s-haproxy
+    restart: always
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - "6443:6443"
+      - "25565:25565"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # sysctls:
+    #   - net.ipv4.ip_unprivileged_port_start=0
+    
