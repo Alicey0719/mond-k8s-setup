@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eu
 
-VERSION='1.30.4'
+K8S_VER='1.30.4'
+CONTAINERD_VER='1.7.20'
 
 if [[ `id -u` -ne 0 ]]; then
     echo "Please run as root"
@@ -84,7 +85,7 @@ gpgkey=https://download.docker.com/linux/centos/gpg
 EOF
 
 yum clean metadata --enablerepo=docker-ce-stable --disablerepo=*
-yum install -y containerd.io-$VERSION --enablerepo=docker-ce-stable
+yum install -y containerd.io-$CONTAINERD_VER --enablerepo=docker-ce-stable
 
 systemctl enable --now containerd
 
@@ -144,7 +145,7 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
 yum clean metadata --enablerepo=kubernetes --disablerepo=*
-yum install -y kubelet-$VERSION kubeadm-$VERSION kubectl-$VERSION --disableexcludes=kubernetes --enablerepo=kubernetes
+yum install -y kubelet-$K8S_VER kubeadm-$K8S_VER kubectl-$K8S_VER --disableexcludes=kubernetes --enablerepo=kubernetes
 systemctl enable --now kubelet
 
 cat <<'EOF' | tee /etc/sysconfig/kubelet
