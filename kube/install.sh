@@ -13,9 +13,43 @@ fi
 setenforce 0 | true
 sed -i 's/^SELINUX=enforcing$/SELINUX=disabled/' /etc/selinux/config
 
-# set ipfowerd
-echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf
-sysctl -p
+# set kernel parameters
+cat <<'EOF' | sudo tee /etc/sysctl.conf
+# sysctl settings are defined through files in
+# /usr/lib/sysctl.d/, /run/sysctl.d/, and /etc/sysctl.d/.
+#
+# Vendors settings live in /usr/lib/sysctl.d/.
+# To override a whole file, create a new file with the same in
+# /etc/sysctl.d/ and put new settings there. To override
+# only specific settings, add a file with a lexically later
+# name in /etc/sysctl.d/ and put new settings there.
+#
+# For more information, see sysctl.conf(5) and sysctl.d(5).
+
+# network
+net.core.somaxconn = 65535
+net.ipv4.tcp_max_syn_backlog = 65535
+net.core.netdev_max_backlog = 16384
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_syncookies = 1
+
+# memory
+vm.swappiness = 0
+EOF
+
+cat <<'EOF' | tee /etc/sysctl.d/k8s.conf
+vm.overcommit_memory = 1
+vm.panic_on_oom = 0
+kernel.panic = 10
+kernel.panic_on_oops = 1
+kernel.keys.root_maxkeys = 1000000
+kernel.keys.root_maxbytes = 25000000
+net.ipv4.tcp_fastopen = 3
+fs.inotify.max_user_watches = 65536
+fs.inotify.max_user_instances = 8192
+EOF
+
+sysctl --system
 
 # swapoff
 swapoff -a
