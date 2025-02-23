@@ -123,6 +123,8 @@ yum install -y containerd.io-$CONTAINERD_VER --enablerepo=docker-ce-stable
 
 systemctl enable --now containerd
 
+# x86_64 only
+# check: containerd config default
 cat <<'EOF' | tee /etc/containerd/config.toml
 disabled_plugins = []
 imports = ["/etc/containerd/config.toml"]
