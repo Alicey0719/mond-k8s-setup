@@ -265,7 +265,7 @@ version = 2
             NoPivotRoot = false
             Root = ""
             ShimCgroup = ""
-            SystemdCgroup = false
+            SystemdCgroup = true
 
       [plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime]
         base_runtime_spec = ""
@@ -438,9 +438,17 @@ yum clean metadata --enablerepo=kubernetes --disablerepo=*
 yum install -y kubelet-$K8S_VER kubeadm-$K8S_VER kubectl-$K8S_VER --disableexcludes=kubernetes --enablerepo=kubernetes
 systemctl enable --now kubelet
 
+# cgroup v1
+# cat <<'EOF' | tee /etc/sysconfig/kubelet
+# KUBELET_EXTRA_ARGS="--cgroup-driver=cgroupfs --container-runtime-endpoint=/run/containerd/containerd.sock"
+# EOF
+
+# cgroup v2
 cat <<'EOF' | tee /etc/sysconfig/kubelet
 KUBELET_EXTRA_ARGS="--cgroup-driver=systemd --container-runtime-endpoint=/run/containerd/containerd.sock"
 EOF
+
+
 
 systemctl restart kubelet
 
