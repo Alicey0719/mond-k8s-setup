@@ -124,7 +124,7 @@ yum install -y containerd.io-$CONTAINERD_VER --enablerepo=docker-ce-stable
 systemctl enable --now containerd
 
 # x86_64 only
-# use cgroup v1
+# use cgroup v2
 # check: containerd config default
 cat <<'EOF' | tee /etc/containerd/config.toml
 disabled_plugins = []
@@ -439,7 +439,7 @@ yum install -y kubelet-$K8S_VER kubeadm-$K8S_VER kubectl-$K8S_VER --disableexclu
 systemctl enable --now kubelet
 
 cat <<'EOF' | tee /etc/sysconfig/kubelet
-KUBELET_EXTRA_ARGS=--cgroup-driver=/run/containerd/containerd.sock
+KUBELET_EXTRA_ARGS="--cgroup-driver=systemd --container-runtime-endpoint=/run/containerd/containerd.sock"
 EOF
 
 systemctl restart kubelet
