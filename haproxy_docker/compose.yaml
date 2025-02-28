@@ -9,10 +9,14 @@ services:
       - "6443:6443"
       - "25565:25565"
     logging:
-      driver: json-file
+      driver: syslog
       options:
-        max-size: "10m"
-        max-file: "3"
+        syslog-facility: daemon
+    #logging:
+    #  driver: json-file
+    #  options:
+    #    max-size: "10m"
+    #    max-file: "3"
     # sysctls:
     #   - net.ipv4.ip_unprivileged_port_start=0
     
